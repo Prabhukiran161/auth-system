@@ -1,6 +1,33 @@
+import { Server } from "http";
 import app from "./app.js";
+import { connectDB } from "./config/db.js";
 import { ENV } from "./config/env.js";
+import { logger } from "./config/logger.js";
+import { gracefulShutdown } from "./gracefulShutdown.js";
 
-app.listen(ENV.PORT, () => {
-  console.log(`Backend Server is running on port ${ENV.PORT}`);
-});
+const startServer = async (): Promise<Server> => {
+  try {
+    await connectDB();
+
+    const server = app.listen(ENV.PORT, () => {
+      logger.info("SERVER_STARTED", {
+        port: ENV.PORT,
+        environment: ENV.NODE_ENV,
+      });
+    });
+
+    gracefulShutdown(server);
+
+    return server;
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error("SERVER_STARTUP_FAILED", {
+        message: error.message,
+        stack: error.stack,
+      });
+    }
+    process.exit(1);
+  }
+};
+
+startServer();
