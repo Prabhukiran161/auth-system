@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 
 export const envSchema = z.object({
   NODE_ENV: z
@@ -9,3 +9,5 @@ export const envSchema = z.object({
   JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
   CORS_ORIGIN: z.string().min(1, "CORS_ORIGIN is required"),
 });
+
+export type Env = z.infer<typeof envSchema>;
