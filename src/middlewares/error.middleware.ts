@@ -5,7 +5,7 @@ import { ERROR_CODES } from "../errors/errorCodes.js";
 import { logger } from "../config/logger.js";
 import { errorResponse } from "../utils/apiResponse.js";
 
-export const errorMiddleware = (
+export const globalErrorHandler = (
   err: unknown,
   req: Request,
   res: Response,

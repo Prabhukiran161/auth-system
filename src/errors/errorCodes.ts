@@ -1,7 +1,7 @@
 import { INVALID } from "zod/v3";
 
 export const ERROR_CODES = {
-  ROUTE_NOT_FOUND: {
+  NOT_FOUND: {
     statusCode: 404,
     message: "Resource not found",
   },
