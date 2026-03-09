@@ -1,5 +1,3 @@
-import { INVALID } from "zod/v3";
-
 export const ERROR_CODES = {
   NOT_FOUND: {
     statusCode: 404,
@@ -12,5 +10,9 @@ export const ERROR_CODES = {
   INVALID_REQUEST: {
     statusCode: 400,
     message: "Invalid request data",
+  },
+  SERVICE_UNAVAILABLE: {
+    statusCode: 503,
+    message: "Service is temporarily unavailable",
   },
 } as const;
