@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { envSchema, type Env } from "../validator/env.schema.js";
+import { envSchema, type Env } from "../validators/env.schema.js";
 
 dotenv.config();
 

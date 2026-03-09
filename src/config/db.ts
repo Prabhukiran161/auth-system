@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose, { type Mongoose } from "mongoose";
 import { logger } from "./logger.js";
 import { ENV } from "./env.js";
 
@@ -14,7 +14,7 @@ export const connectDB = async (): Promise<Mongoose> => {
     return conn;
   } catch (error) {
     if (error instanceof Error) {
-      logger.info("DATABASE_CONNECTION_FAILED", {
+      logger.error("DATABASE_CONNECTION_FAILED", {
         message: error.message,
         stack: error.stack,
       });
@@ -33,7 +33,7 @@ export const disconnectDB = async (): Promise<void> => {
     logger.info("DATABASE_DISCONNECTED");
   } catch (error) {
     if (error instanceof Error) {
-      logger.info("DATABASE_DISCONNECT_FAILED", {
+      logger.error("DATABASE_DISCONNECT_FAILED", {
         message: error.message,
         stack: error.stack,
       });

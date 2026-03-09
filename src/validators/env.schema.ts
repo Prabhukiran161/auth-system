@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const envSchema = z.object({
   NODE_ENV: z
-    .enum(["development", "production", "test"])
+    .enum(["development", "production", "testing"])
     .default("development"),
   PORT: z.string().regex(/^\d+$/, "PORT must be a number").transform(Number),
   MONGO_URL: z.string().min(1, "MONGO_URL is required"),
