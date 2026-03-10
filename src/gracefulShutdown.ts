@@ -1,11 +1,12 @@
 import { Server } from "http";
+import net from "net";
 import { logger } from "./config/logger.js";
 import { disconnectDB } from "./config/db.js";
 
 let isShuttingDown = false;
 let isReady = true;
 
-export const gracefulShutdown = (server: Server) => {
+export const gracefulShutdown = (server: Server, sockets: Set<net.Socket>) => {
   const shutdown = async (reason: string, error?: unknown) => {
     if (isShuttingDown) {
       logger.warn("SHUTDOWN_ALREADY_INPROCESS");
@@ -18,6 +19,10 @@ export const gracefulShutdown = (server: Server) => {
     const shutdownStart = Date.now();
 
     logger.info("GRACEFUL_SHUTDOWN_STARTED", { reason });
+
+    server.getConnections((err, count) => {
+      logger.info("ACTIVE_CONNECTIONS", { count });
+    });
 
     if (error instanceof Error) {
       logger.error("SHUTDOWN_TRIGGERED_BY_ERROR", {
@@ -37,6 +42,14 @@ export const gracefulShutdown = (server: Server) => {
           logger.info("HTTP_SERVER_CLOSED");
           resolve();
         });
+
+        setTimeout(() => {
+          logger.warn("FORCE_DESTROYING_SOCKETS");
+
+          sockets.forEach((socket) => {
+            socket.destroy();
+          });
+        }, 5000);
       });
 
       await disconnectDB();

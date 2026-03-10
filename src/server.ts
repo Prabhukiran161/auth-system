@@ -1,4 +1,5 @@
 import { Server } from "http";
+import net from "net";
 import app from "./app.js";
 import { connectDB } from "./config/db.js";
 import { ENV } from "./config/env.js";
@@ -16,7 +17,15 @@ const startServer = async (): Promise<Server> => {
       });
     });
 
-    gracefulShutdown(server);
+    const sockets = new Set<net.Socket>();
+    server.on("connection", (socket) => {
+      sockets.add(socket);
+      server.on("close", () => {
+        sockets.delete(socket);
+      });
+    });
+
+    gracefulShutdown(server, sockets);
 
     return server;
   } catch (error) {
