@@ -33,7 +33,7 @@ export const globalErrorHandler = (
     logger.error("UNHANDLED_ERROR", {
       method: req.method,
       path: req.originalUrl,
-      message: err.message,
+      errorMessage: err.message,
       stack: err.stack,
     });
   }

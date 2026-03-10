@@ -15,4 +15,8 @@ export const ERROR_CODES = {
     statusCode: 503,
     message: "Service is temporarily unavailable",
   },
+  EMAIL_ALREADY_EXISTS: {
+    statusCode: 400,
+    message: "Email is already registered",
+  },
 } as const;

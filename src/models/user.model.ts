@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
@@ -43,6 +43,8 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-export type UserDocument = mongoose.InferSchemaType<typeof userSchema>;
+export type UserDocument = mongoose.InferSchemaType<typeof userSchema> & {
+  _id: Types.ObjectId;
+};
 
 export const User = mongoose.model("User", userSchema);
