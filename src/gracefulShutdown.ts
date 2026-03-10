@@ -2,6 +2,7 @@ import { Server } from "http";
 import net from "net";
 import { logger } from "./config/logger.js";
 import { disconnectDB } from "./config/db.js";
+import { closeSMTP } from "./email/mailer.js";
 
 let isShuttingDown = false;
 let isReady = true;
@@ -53,6 +54,8 @@ export const gracefulShutdown = (server: Server, sockets: Set<net.Socket>) => {
       });
 
       await disconnectDB();
+
+      await closeSMTP();
 
       clearTimeout(forceExitTimeout);
 

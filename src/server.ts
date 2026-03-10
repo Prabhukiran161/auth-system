@@ -5,10 +5,12 @@ import { connectDB } from "./config/db.js";
 import { ENV } from "./config/env.js";
 import { logger } from "./config/logger.js";
 import { gracefulShutdown } from "./gracefulShutdown.js";
+import { verifySMTP } from "./email/mailer.js";
 
 const startServer = async (): Promise<Server> => {
   try {
     await connectDB();
+    await verifySMTP();
 
     const server = app.listen(ENV.PORT, () => {
       logger.info("SERVER_STARTED", {
@@ -20,7 +22,7 @@ const startServer = async (): Promise<Server> => {
     const sockets = new Set<net.Socket>();
     server.on("connection", (socket) => {
       sockets.add(socket);
-      server.on("close", () => {
+      socket.on("close", () => {
         sockets.delete(socket);
       });
     });

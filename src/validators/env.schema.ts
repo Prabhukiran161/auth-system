@@ -8,6 +8,14 @@ export const envSchema = z.object({
   MONGO_URL: z.string().min(1, "MONGO_URL is required"),
   JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
   CORS_ORIGIN: z.string().min(1, "CORS_ORIGIN is required"),
+  SMTP_HOST: z.string().min(1, "SMTP_HOST is required"),
+  SMTP_PORT: z
+    .string()
+    .regex(/^\d+$/, "SMTP_PORT must be a number")
+    .transform(Number),
+  SMTP_USER: z.string().min(1, "SMTP_USER is required"),
+  SMTP_PASS: z.string().min(1, "SMTP_PASS is required"),
+  CLIENT_URL: z.string().min(1, "CLIENT_URL is required"),
 });
 
 export type Env = z.infer<typeof envSchema>;
