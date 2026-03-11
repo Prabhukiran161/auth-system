@@ -31,4 +31,8 @@ export const ERROR_CODES = {
     statusCode: 409,
     message: "Email is already verified",
   },
+  USER_NOT_FOUND: {
+    statusCode: 404,
+    message: "User not found",
+  },
 } as const;

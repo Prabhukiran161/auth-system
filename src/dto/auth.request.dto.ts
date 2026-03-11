@@ -1,5 +1,9 @@
 import type { Request } from "express";
-import { RegisterInput, VerifyEmailToken } from "../validators/auth.schema.js";
+import {
+  RegisterInput,
+  resendVerificationInput,
+  VerifyEmailToken,
+} from "../validators/auth.schema.js";
 
 export const registerRequestDTO = (req: Request): RegisterInput => {
   const body = req.body ?? {};
@@ -14,5 +18,14 @@ export const verifyEmailRequestDTO = (req: Request): VerifyEmailToken => {
   const body = req.body ?? {};
   return {
     token: body.token,
+  };
+};
+
+export const resendVerificationDTO = (
+  req: Request,
+): resendVerificationInput => {
+  const body = req.body ?? {};
+  return {
+    email: body.email,
   };
 };

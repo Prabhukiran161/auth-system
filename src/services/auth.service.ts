@@ -8,7 +8,11 @@ import {
 } from "../repositories/emailVerification.repository.js";
 import { hashPassword } from "../utils/password.js";
 import { generateVerificationToken } from "../utils/token.js";
-import { RegisterInput, VerifyEmailToken } from "../validators/auth.schema.js";
+import {
+  RegisterInput,
+  resendVerificationInput,
+  VerifyEmailToken,
+} from "../validators/auth.schema.js";
 
 export const registerService = async (
   input: RegisterInput,
@@ -23,13 +27,9 @@ export const registerService = async (
     email: input.email,
     password: hashedPassword,
   });
-
   const token = generateVerificationToken();
-
   await createEmailVerificationToken(user._id, token);
-
   await sendVerificationEmail(user.email, token);
-
   return user;
 };
 
@@ -52,4 +52,20 @@ export const verifyEmailService = async (token: VerifyEmailToken) => {
   await user.save();
   await deleteEmailVerificationToken(record._id);
   return { verified: true };
+};
+
+export const resendVerificationService = async (
+  email: resendVerificationInput,
+) => {
+  const user = await User.findOne(email);
+  if (!user) {
+    throw new AppError("USER_NOT_FOUND");
+  }
+  if (user.emailVerified) {
+    throw new AppError("EMAIL_ALREADY_VERIFIED");
+  }
+  const token = generateVerificationToken();
+  await createEmailVerificationToken(user._id, token);
+  await sendVerificationEmail(user.email, token);
+  return { message: "VERIFICATION_EMAIL_SENT" };
 };

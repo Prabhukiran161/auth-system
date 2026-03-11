@@ -1,13 +1,16 @@
 import {
   registerRequestDTO,
+  resendVerificationDTO,
   verifyEmailRequestDTO,
 } from "../dto/auth.request.dto.js";
 import {
   registerSchema,
+  resendVerificationSchema,
   verifyEmailSchema,
 } from "../validators/auth.schema.js";
 import {
   registerService,
+  resendVerificationService,
   verifyEmailService,
 } from "../services/auth.service.js";
 import { registerResponseDTO } from "../dto/auth.response.dto.js";
@@ -25,6 +28,13 @@ export const registerController = catchAsync(async (req, res) => {
 export const verifyEmailController = catchAsync(async (req, res) => {
   const dto = verifyEmailRequestDTO(req);
   const validatedToken = verifyEmailSchema.parse(dto);
-  const response =await verifyEmailService(validatedToken);
+  const response = await verifyEmailService(validatedToken);
+  res.status(200).json(successResponse(response));
+});
+
+export const resendVerificationController = catchAsync(async (req, res) => {
+  const dto = resendVerificationDTO(req);
+  const validatedEmail = resendVerificationSchema.parse(dto);
+  const response = await resendVerificationService(validatedEmail);
   res.status(200).json(successResponse(response));
 });
