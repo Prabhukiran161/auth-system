@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import { required } from "zod/mini";
+import mongoose, { Types } from "mongoose";
 
 const emailVerificationTokenSchema = new mongoose.Schema(
   {
@@ -12,11 +11,11 @@ const emailVerificationTokenSchema = new mongoose.Schema(
     token: {
       type: String,
       required: true,
+      index: true,
     },
     expiresAt: {
       type: Date,
       required: true,
-      index: { expires: 0 },
     },
   },
   {
@@ -27,7 +26,7 @@ const emailVerificationTokenSchema = new mongoose.Schema(
 
 export type EmailVerificationTokenDocument = mongoose.InferSchemaType<
   typeof emailVerificationTokenSchema
->;
+> & { _id: Types.ObjectId };
 
 export const EmailVerificationToken = mongoose.model(
   "EmailVerificationToken",

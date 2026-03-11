@@ -1,5 +1,5 @@
 import type { Request } from "express";
-import { RegisterInput } from "../validators/auth.schema.js";
+import { RegisterInput, VerifyEmailToken } from "../validators/auth.schema.js";
 
 export const registerRequestDTO = (req: Request): RegisterInput => {
   const body = req.body ?? {};
@@ -7,5 +7,12 @@ export const registerRequestDTO = (req: Request): RegisterInput => {
     name: body.name,
     email: body.email,
     password: body.password,
+  };
+};
+
+export const verifyEmailRequestDTO = (req: Request): VerifyEmailToken => {
+  const body = req.body ?? {};
+  return {
+    token: body.token,
   };
 };

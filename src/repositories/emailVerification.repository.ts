@@ -11,3 +11,7 @@ export const createEmailVerificationToken = async (
   await EmailVerificationToken.deleteMany({ userId });
   return EmailVerificationToken.create({ userId, token, expiresAt });
 };
+
+export const deleteEmailVerificationToken = async (tokenId: Types.ObjectId) => {
+  return EmailVerificationToken.deleteOne({ _id: tokenId });
+};

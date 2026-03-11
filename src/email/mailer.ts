@@ -23,11 +23,15 @@ export const sendMail = async ({
   subject,
   html,
 }: SendMailOptions): Promise<void> => {
-  await transporter.sendMail({
+  const info = await transporter.sendMail({
     from: `"Auth-System" <${ENV.SMTP_USER}>`,
     to,
     subject,
     html,
+  });
+  logger.info("EMAIL_SENT", {
+    to,
+    messageId: info.messageId,
   });
 };
 

@@ -7,3 +7,12 @@ export const registerSchema = z.object({
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+export const verifyEmailSchema = z.object({
+  token: z
+    .string()
+    .length(64, "Invalid token length")
+    .regex(/^[a-f0-9]+$/, "Token must be hex"),
+});
+
+export type VerifyEmailToken = z.infer<typeof verifyEmailSchema>;

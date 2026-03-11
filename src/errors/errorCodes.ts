@@ -19,4 +19,16 @@ export const ERROR_CODES = {
     statusCode: 400,
     message: "Email is already registered",
   },
+  INVALID_TOKEN: {
+    statusCode: 400,
+    message: "Invalid Token",
+  },
+  TOKEN_EXPIRED: {
+    statusCode: 400,
+    message: "Token already expired",
+  },
+  EMAIL_ALREADY_VERIFIED: {
+    statusCode: 409,
+    message: "Email is already verified",
+  },
 } as const;
