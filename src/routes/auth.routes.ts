@@ -1,6 +1,8 @@
 import { Router } from "express";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 import {
   loginController,
+  logoutAllController,
   logoutController,
   refreshController,
   registerController,
@@ -20,6 +22,8 @@ router.post("/login", loginController);
 
 router.post("/refresh", refreshController);
 
-router.post("/logout", logoutController);
+router.post("/logout", authMiddleware, logoutController);
+
+router.post("/logout-all", authMiddleware, logoutAllController);
 
 export default router;

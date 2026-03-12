@@ -13,11 +13,10 @@ import {
   generateRefreshToken,
   generateVerificationToken,
   REFRESH_TOKEN_TTL,
-  verifyToken,
+  verifyRefreshToken,
 } from "../utils/token.js";
 import {
   LoginInput,
-  logoutPayload,
   RefreshTokenPayload,
   RegisterInput,
   ResendVerificationInput,
@@ -122,7 +121,7 @@ export const loginService = async (
 };
 
 export const refreshService = async (input: RefreshTokenPayload) => {
-  const decoded = verifyToken(input.refreshToken);
+  const decoded = verifyRefreshToken(input.refreshToken);
   const session = await Session.findById(decoded.sessionId);
   if (!session) {
     throw new AppError("INVALID_REFRESH_TOKEN");
@@ -166,13 +165,17 @@ export const refreshService = async (input: RefreshTokenPayload) => {
   };
 };
 
-export const logoutService = async (input: logoutPayload) => {
-  const decoded = verifyToken(input.refreshToken);
-  const session = await Session.findById(decoded.sessionId);
+export const logoutService = async (sessionId: string) => {
+  const session = await Session.findById(sessionId);
   if (!session) {
     throw new AppError("INVALID_REFRESH_TOKEN");
   }
   session.revoked = true;
   await session.save();
   return { loggedOut: true };
+};
+
+export const logoutAllService = async (userId: string) => {
+  await Session.updateMany({ userId }, { revoked: true });
+  return { sessionsRevoked: true };
 };

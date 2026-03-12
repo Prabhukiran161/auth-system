@@ -7,5 +7,5 @@ export const refreshTokenCookieOptions: CookieOptions = {
   secure: ENV.NODE_ENV === "production",
   sameSite: "strict",
   maxAge: REFRESH_TOKEN_TTL,
-  path: "/",
+  path: "/auth/refresh",
 };

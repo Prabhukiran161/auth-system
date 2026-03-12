@@ -51,6 +51,10 @@ export const ERROR_CODES = {
     statusCode: 401,
     message: "Invalid refresh Token",
   },
+  INVALID_ACCESS_TOKEN: {
+    statusCode: 401,
+    message: "Invalid access Token",
+  },
   INVALID_SESSION: {
     statusCode: 401,
     message: "Invalid session",

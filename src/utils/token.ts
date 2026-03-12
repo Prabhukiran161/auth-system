@@ -28,10 +28,20 @@ export const generateRefreshToken = (payload: {
 
 type RefreshToken = { sessionId: string };
 
-export const verifyToken = (input: string) => {
+export const verifyRefreshToken = (input: string): RefreshToken => {
   try {
     return jwt.verify(input, ENV.JWT_SECRET) as RefreshToken;
   } catch (error) {
     throw new AppError("INVALID_REFRESH_TOKEN");
+  }
+};
+
+type AccessToken = { userId: string; sessionId: string; role: string };
+
+export const verifyAccessToken = (input: string): AccessToken => {
+  try {
+    return jwt.verify(input, ENV.JWT_SECRET) as AccessToken;
+  } catch (error) {
+    throw new AppError("INVALID_ACCESS_TOKEN");
   }
 };

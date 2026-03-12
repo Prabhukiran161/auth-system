@@ -1,6 +1,5 @@
 import {
   loginRequestDTO,
-  logoutRequestDTO,
   refreshRequestDTO,
   registerRequestDTO,
   resendVerificationRequestDTO,
@@ -8,7 +7,6 @@ import {
 } from "../dto/auth.request.dto.js";
 import {
   loginSchema,
-  logoutSchema,
   refreshSchema,
   registerSchema,
   resendVerificationSchema,
@@ -16,6 +14,7 @@ import {
 } from "../validators/auth.schema.js";
 import {
   loginService,
+  logoutAllService,
   logoutService,
   refreshService,
   registerService,
@@ -27,6 +26,7 @@ import { successResponse } from "../utils/apiResponse.js";
 import { catchAsync } from "../utils/catchAsync.js";
 import { refreshTokenCookieOptions } from "../utils/cookie.js";
 import { extractDevice } from "../utils/device.js";
+import { AppError } from "../errors/AppError.js";
 
 export const registerController = catchAsync(async (req, res) => {
   const dto = registerRequestDTO(req);
@@ -75,9 +75,19 @@ export const refreshController = catchAsync(async (req, res) => {
 });
 
 export const logoutController = catchAsync(async (req, res) => {
-  const dto = logoutRequestDTO(req);
-  const validatedRefreshToken = logoutSchema.parse(dto);
-  const response = await logoutService(validatedRefreshToken);
+  if (!req.user) {
+    throw new AppError("UNAUTHORIZED");
+  }
+  const response = await logoutService(req.user.sessionId);
+  res.clearCookie("refreshToken", refreshTokenCookieOptions);
+  res.status(200).json(successResponse(response));
+});
+
+export const logoutAllController = catchAsync(async (req, res) => {
+  if (!req.user) {
+    throw new AppError("UNAUTHORIZED");
+  }
+  const response = await logoutAllService(req.user.userId);
   res.clearCookie("refreshToken", refreshTokenCookieOptions);
   res.status(200).json(successResponse(response));
 });
