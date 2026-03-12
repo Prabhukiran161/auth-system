@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 const sessionSchema = new mongoose.Schema(
   {
@@ -8,17 +8,31 @@ const sessionSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    refreshToken: {
+    device: {
       type: String,
       required: true,
     },
-    device: String,
-    ip: String,
-    userAgent: String,
+    refreshTokenHash: {
+      type: String,
+      default: null,
+    },
+    ipAddress: {
+      type: String,
+      required: true,
+    },
+    userAgent: {
+      type: String,
+      required: true,
+    },
     expiresAt: {
       type: Date,
       required: true,
-      index: { expires: 0 },
+      index: true,
+    },
+    revoked: {
+      type: Boolean,
+      default: false,
+      index: true,
     },
   },
   {
@@ -27,6 +41,8 @@ const sessionSchema = new mongoose.Schema(
   },
 );
 
-export type SessionDocument = mongoose.InferSchemaType<typeof sessionSchema>;
+export type SessionDocument = mongoose.InferSchemaType<typeof sessionSchema> & {
+  _id: Types.ObjectId;
+};
 
 export const Session = mongoose.model("Session", sessionSchema);

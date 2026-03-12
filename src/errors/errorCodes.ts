@@ -35,4 +35,16 @@ export const ERROR_CODES = {
     statusCode: 404,
     message: "User not found",
   },
+  INVALID_CREDENTIALS: {
+    statusCode: 401,
+    message: "Invalid credentials",
+  },
+  EMAIL_NOT_VERIFIED: {
+    statusCode: 401,
+    message: "Email is not verified",
+  },
+  ACCOUNT_LOCKED: {
+    statusCode: 423,
+    message: "Your account is locked due to multiple failed login attempts.",
+  },
 } as const;
