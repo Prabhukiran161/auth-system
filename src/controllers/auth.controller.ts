@@ -1,5 +1,6 @@
 import {
   loginRequestDTO,
+  logoutRequestDTO,
   refreshRequestDTO,
   registerRequestDTO,
   resendVerificationRequestDTO,
@@ -7,6 +8,7 @@ import {
 } from "../dto/auth.request.dto.js";
 import {
   loginSchema,
+  logoutSchema,
   refreshSchema,
   registerSchema,
   resendVerificationSchema,
@@ -14,6 +16,7 @@ import {
 } from "../validators/auth.schema.js";
 import {
   loginService,
+  logoutService,
   refreshService,
   registerService,
   resendVerificationService,
@@ -69,4 +72,12 @@ export const refreshController = catchAsync(async (req, res) => {
   res
     .status(200)
     .json(successResponse({ accessToken: newtokens.newAccessToken }));
+});
+
+export const logoutController = catchAsync(async (req, res) => {
+  const dto = logoutRequestDTO(req);
+  const validatedRefreshToken = logoutSchema.parse(dto);
+  const response = await logoutService(validatedRefreshToken);
+  res.clearCookie("refreshToken", refreshTokenCookieOptions);
+  res.status(200).json(successResponse(response));
 });

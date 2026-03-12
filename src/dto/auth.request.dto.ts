@@ -1,6 +1,7 @@
 import type { Request } from "express";
 import {
   LoginInput,
+  logoutPayload,
   RefreshTokenPayload,
   RegisterInput,
   ResendVerificationInput,
@@ -41,5 +42,9 @@ export const loginRequestDTO = (req: Request): LoginInput => {
 };
 
 export const refreshRequestDTO = (req: Request): RefreshTokenPayload => {
+  return { refreshToken: req.cookies.refreshToken };
+};
+
+export const logoutRequestDTO = (req: Request): logoutPayload => {
   return { refreshToken: req.cookies.refreshToken };
 };

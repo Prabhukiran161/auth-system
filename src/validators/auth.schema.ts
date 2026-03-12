@@ -35,3 +35,9 @@ export const refreshSchema = z.object({
 });
 
 export type RefreshTokenPayload = z.infer<typeof refreshSchema>;
+
+export const logoutSchema = z.object({
+  refreshToken: z.string().min(1),
+});
+
+export type logoutPayload = z.infer<typeof logoutSchema>;

@@ -17,6 +17,7 @@ import {
 } from "../utils/token.js";
 import {
   LoginInput,
+  logoutPayload,
   RefreshTokenPayload,
   RegisterInput,
   ResendVerificationInput,
@@ -163,4 +164,15 @@ export const refreshService = async (input: RefreshTokenPayload) => {
     newAccessToken,
     newRefreshToken,
   };
+};
+
+export const logoutService = async (input: logoutPayload) => {
+  const decoded = verifyToken(input.refreshToken);
+  const session = await Session.findById(decoded.sessionId);
+  if (!session) {
+    throw new AppError("INVALID_REFRESH_TOKEN");
+  }
+  session.revoked = true;
+  await session.save();
+  return { loggedOut: true };
 };
