@@ -2,6 +2,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { ENV } from "../config/env.js";
 import { Types } from "mongoose";
+import { AppError } from "../errors/AppError.js";
 
 export const REFRESH_TOKEN_TTL = 1000 * 60 * 60 * 24 * 7;
 
@@ -23,4 +24,14 @@ export const generateRefreshToken = (payload: {
   sessionId: Types.ObjectId;
 }) => {
   return jwt.sign(payload, ENV.JWT_SECRET, { expiresIn: "7d" });
+};
+
+type RefreshToken = { sessionId: string };
+
+export const verifyToken = (input: string) => {
+  try {
+    return jwt.verify(input, ENV.JWT_SECRET) as RefreshToken;
+  } catch (error) {
+    throw new AppError("INVALID_REFRESH_TOKEN");
+  }
 };

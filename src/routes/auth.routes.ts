@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   loginController,
+  refreshController,
   registerController,
   resendVerificationController,
   verifyEmailController,
@@ -15,4 +16,7 @@ router.post("/verify-email", verifyEmailController);
 router.post("/resend-verification", resendVerificationController);
 
 router.post("/login", loginController);
+
+router.post("/refresh", refreshController);
+
 export default router;

@@ -47,4 +47,20 @@ export const ERROR_CODES = {
     statusCode: 423,
     message: "Your account is locked due to multiple failed login attempts.",
   },
+  INVALID_REFRESH_TOKEN: {
+    statusCode: 401,
+    message: "Invalid refresh Token",
+  },
+  INVALID_SESSION: {
+    statusCode: 401,
+    message: "Invalid session",
+  },
+  SESSION_EXPIRED: {
+    statusCode: 401,
+    message: "Session Expired",
+  },
+  UNAUTHORIZED: {
+    statusCode: 401,
+    message: "Unauthorized",
+  },
 } as const;

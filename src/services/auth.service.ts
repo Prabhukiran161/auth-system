@@ -13,9 +13,11 @@ import {
   generateRefreshToken,
   generateVerificationToken,
   REFRESH_TOKEN_TTL,
+  verifyToken,
 } from "../utils/token.js";
 import {
   LoginInput,
+  RefreshTokenPayload,
   RegisterInput,
   ResendVerificationInput,
   VerifyEmailToken,
@@ -115,5 +117,50 @@ export const loginService = async (
   return {
     accessToken,
     refreshToken,
+  };
+};
+
+export const refreshService = async (input: RefreshTokenPayload) => {
+  const decoded = verifyToken(input.refreshToken);
+  const session = await Session.findById(decoded.sessionId);
+  if (!session) {
+    throw new AppError("INVALID_REFRESH_TOKEN");
+  }
+  if (session.revoked) {
+    throw new AppError("INVALID_REFRESH_TOKEN");
+  }
+  if (session.expiresAt.getTime() < Date.now()) {
+    throw new AppError("SESSION_EXPIRED");
+  }
+  if (!session.refreshTokenHash) {
+    throw new AppError("INVALID_REFRESH_TOKEN");
+  }
+  const isCurrent = await compareHash(
+    input.refreshToken,
+    session.refreshTokenHash,
+  );
+  const isPrevious =
+    session.previousRefreshTokenHash &&
+    (await compareHash(input.refreshToken, session.previousRefreshTokenHash));
+  if (!isCurrent && !isPrevious) {
+    throw new AppError("INVALID_REFRESH_TOKEN");
+  }
+  const newRefreshToken = generateRefreshToken({ sessionId: session._id });
+  const user = await User.findById(session.userId);
+  if (!user) {
+    throw new AppError("INVALID_REFRESH_TOKEN");
+  }
+  const newAccessToken = generateAccessToken({
+    userId: session.userId,
+    sessionId: session._id,
+    role: user.role,
+  });
+  const newRefreshTokenHash = await generateHash(newRefreshToken);
+  session.previousRefreshTokenHash = session.refreshTokenHash;
+  session.refreshTokenHash = newRefreshTokenHash;
+  await session.save();
+  return {
+    newAccessToken,
+    newRefreshToken,
   };
 };

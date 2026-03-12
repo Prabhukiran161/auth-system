@@ -16,6 +16,10 @@ const sessionSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    previousRefreshTokenHash: {
+      type: String,
+      default: null,
+    },
     ipAddress: {
       type: String,
       required: true,
