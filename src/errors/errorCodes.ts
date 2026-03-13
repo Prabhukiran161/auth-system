@@ -47,6 +47,10 @@ export const ERROR_CODES = {
     statusCode: 423,
     message: "Account temporarily locked due to multiple failed login attempts",
   },
+  ACCOUNT_BLOCKED: {
+    statusCode: 403,
+    message: "Account has blocked",
+  },
   INVALID_REFRESH_TOKEN: {
     statusCode: 401,
     message: "Invalid refresh Token",

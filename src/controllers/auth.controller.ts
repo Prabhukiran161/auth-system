@@ -1,4 +1,5 @@
 import {
+  changePasswordRequestDTO,
   loginRequestDTO,
   refreshRequestDTO,
   registerRequestDTO,
@@ -6,6 +7,7 @@ import {
   verifyEmailRequestDTO,
 } from "../dto/auth.request.dto.js";
 import {
+  changePasswordSchema,
   loginSchema,
   refreshSchema,
   registerSchema,
@@ -13,6 +15,7 @@ import {
   verifyEmailSchema,
 } from "../validators/auth.schema.js";
 import {
+  changePasswordService,
   loginService,
   logoutAllService,
   logoutService,
@@ -82,6 +85,14 @@ export const logoutController = catchAsync(async (req, res) => {
 
 export const logoutAllController = catchAsync(async (req, res) => {
   const response = await logoutAllService(req.user!.userId);
+  res.clearCookie("refreshToken", refreshTokenCookieOptions);
+  res.status(200).json(successResponse(response));
+});
+
+export const changePasswordController = catchAsync(async (req, res) => {
+  const dto = changePasswordRequestDTO(req);
+  const validatedData = changePasswordSchema.parse(dto);
+  const response = await changePasswordService(validatedData, req.user!.userId);
   res.clearCookie("refreshToken", refreshTokenCookieOptions);
   res.status(200).json(successResponse(response));
 });

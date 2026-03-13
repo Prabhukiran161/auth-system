@@ -1,7 +1,7 @@
 import type { Request } from "express";
 import {
+  changePasswordDocument,
   LoginInput,
-  logoutPayload,
   RefreshTokenPayload,
   RegisterInput,
   ResendVerificationInput,
@@ -43,4 +43,11 @@ export const loginRequestDTO = (req: Request): LoginInput => {
 
 export const refreshRequestDTO = (req: Request): RefreshTokenPayload => {
   return { refreshToken: req.cookies.refreshToken };
+};
+
+export const changePasswordRequestDTO = (
+  req: Request,
+): changePasswordDocument => {
+  const body = req.body ?? {};
+  return { oldPassword: body.oldPassword, newPassword: body.newPassword };
 };

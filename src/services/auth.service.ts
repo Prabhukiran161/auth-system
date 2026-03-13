@@ -16,6 +16,7 @@ import {
   verifyRefreshToken,
 } from "../utils/token.js";
 import {
+  changePasswordDocument,
   LoginInput,
   RefreshTokenPayload,
   RegisterInput,
@@ -178,4 +179,27 @@ export const logoutService = async (sessionId: string) => {
 export const logoutAllService = async (userId: string) => {
   await Session.updateMany({ userId }, { revoked: true });
   return { sessionsRevoked: true };
+};
+
+export const changePasswordService = async (
+  input: changePasswordDocument,
+  userId: string,
+) => {
+  if (input.oldPassword === input.newPassword) {
+    throw new AppError("INVALID_REQUEST");
+  }
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError("USER_NOT_FOUND");
+  }
+  const isValid = await compareHash(input.oldPassword, user.password);
+  if (!isValid) {
+    throw new AppError("INVALID_PASSWORD");
+  }
+  if (user.isBlocked) {
+    throw new AppError("ACCOUNT_BLOCKED");
+  }
+  user.password = await generateHash(input.newPassword);
+  await Promise.all([user.save(), Session.deleteMany({ userId })]);
+  return { passwordChanged: true };
 };
