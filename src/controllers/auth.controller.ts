@@ -75,19 +75,13 @@ export const refreshController = catchAsync(async (req, res) => {
 });
 
 export const logoutController = catchAsync(async (req, res) => {
-  if (!req.user) {
-    throw new AppError("UNAUTHORIZED");
-  }
-  const response = await logoutService(req.user.sessionId);
+  const response = await logoutService(req.user!.sessionId);
   res.clearCookie("refreshToken", refreshTokenCookieOptions);
   res.status(200).json(successResponse(response));
 });
 
 export const logoutAllController = catchAsync(async (req, res) => {
-  if (!req.user) {
-    throw new AppError("UNAUTHORIZED");
-  }
-  const response = await logoutAllService(req.user.userId);
+  const response = await logoutAllService(req.user!.userId);
   res.clearCookie("refreshToken", refreshTokenCookieOptions);
   res.status(200).json(successResponse(response));
 });
