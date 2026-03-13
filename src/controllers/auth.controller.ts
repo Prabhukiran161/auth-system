@@ -24,7 +24,7 @@ import {
 import { registerResponseDTO } from "../dto/auth.response.dto.js";
 import { successResponse } from "../utils/apiResponse.js";
 import { catchAsync } from "../utils/catchAsync.js";
-import { refreshTokenCookieOptions } from "../utils/cookie.js";
+import { refreshTokenCookieOptions } from "../config/cookie.js";
 import { extractDevice } from "../utils/device.js";
 import { AppError } from "../errors/AppError.js";
 

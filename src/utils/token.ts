@@ -27,7 +27,6 @@ export const generateRefreshToken = (payload: {
 };
 
 type RefreshToken = { sessionId: string };
-
 export const verifyRefreshToken = (input: string): RefreshToken => {
   try {
     return jwt.verify(input, ENV.JWT_SECRET) as RefreshToken;
@@ -37,7 +36,6 @@ export const verifyRefreshToken = (input: string): RefreshToken => {
 };
 
 type AccessToken = { userId: string; sessionId: string; role: string };
-
 export const verifyAccessToken = (input: string): AccessToken => {
   try {
     return jwt.verify(input, ENV.JWT_SECRET) as AccessToken;

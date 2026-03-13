@@ -1,5 +1,5 @@
-import { ENV } from "../config/env.js";
-import { REFRESH_TOKEN_TTL } from "./token.js";
+import { ENV } from "./env.js";
+import { REFRESH_TOKEN_TTL } from "../utils/token.js";
 import type { CookieOptions } from "express";
 
 export const refreshTokenCookieOptions: CookieOptions = {
