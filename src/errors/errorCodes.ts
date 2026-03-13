@@ -67,6 +67,10 @@ export const ERROR_CODES = {
     statusCode: 401,
     message: "Authentication required",
   },
+  INVALID_PASSWORD: {
+    statusCode: 401,
+    message: "Invalid password",
+  },
 } as const;
 
 export type ErrorCode = keyof typeof ERROR_CODES;

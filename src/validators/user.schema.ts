@@ -5,3 +5,9 @@ export const updateUserSchema = z.object({
 });
 
 export type UpdateUserDocument = z.infer<typeof updateUserSchema>;
+
+export const deleteUserSchema = z.object({
+  password: z.string().min(8),
+});
+
+export type DeleteUserDocument = z.infer<typeof deleteUserSchema>;
