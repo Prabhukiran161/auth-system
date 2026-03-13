@@ -1,4 +1,4 @@
-import z from "zod";
+import z, { email } from "zod";
 
 export const registerSchema = z.object({
   name: z.string().min(2),
@@ -48,3 +48,10 @@ export const forgotPasswordSchema = z.object({
 });
 
 export type ForgotPasswordDocument = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1),
+  password: z.string().min(8),
+});
+
+export type resetPasswordDocument = z.infer<typeof resetPasswordSchema>;

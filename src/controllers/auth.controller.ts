@@ -5,6 +5,7 @@ import {
   refreshRequestDTO,
   registerRequestDTO,
   resendVerificationRequestDTO,
+  resetPasswordRequestDTO,
   verifyEmailRequestDTO,
 } from "../dto/auth.request.dto.js";
 import {
@@ -14,6 +15,7 @@ import {
   refreshSchema,
   registerSchema,
   resendVerificationSchema,
+  resetPasswordSchema,
   verifyEmailSchema,
 } from "../validators/auth.schema.js";
 import {
@@ -25,6 +27,7 @@ import {
   refreshService,
   registerService,
   resendVerificationService,
+  resetPasswordService,
   verifyEmailService,
 } from "../services/auth.service.js";
 import { registerResponseDTO } from "../dto/auth.response.dto.js";
@@ -105,5 +108,12 @@ export const forgotPasswordController = catchAsync(async (req, res) => {
   const response = await forgotPasswordService(
     validEmail.email.toLowerCase().trim(),
   );
+  res.status(200).json(successResponse(response));
+});
+
+export const resetPasswordController = catchAsync(async (req, res) => {
+  const dto = resetPasswordRequestDTO(req);
+  const { token, password } = resetPasswordSchema.parse(dto);
+  const response = await resetPasswordService(token, password);
   res.status(200).json(successResponse(response));
 });

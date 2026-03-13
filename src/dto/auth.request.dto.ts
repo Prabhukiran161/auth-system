@@ -6,6 +6,7 @@ import {
   RefreshTokenPayload,
   RegisterInput,
   ResendVerificationInput,
+  resetPasswordDocument,
   VerifyEmailToken,
 } from "../validators/auth.schema.js";
 
@@ -58,4 +59,12 @@ export const forgotPasswordRequestDTO = (
 ): ForgotPasswordDocument => {
   const body = req.body ?? {};
   return { email: body.email };
+};
+
+export const resetPasswordRequestDTO = (req: Request): resetPasswordDocument => {
+  const body = req.body ?? {};
+  return {
+    token: body.token,
+    password: body.password,
+  };
 };

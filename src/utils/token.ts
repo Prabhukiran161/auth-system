@@ -14,6 +14,10 @@ export const generateVerificationToken = () => {
   return crypto.randomBytes(32).toString("hex");
 };
 
+export const generateSHA256Hash = (value: string): string => {
+  return crypto.createHash("sha256").update(value).digest("hex");
+};
+
 export const generateAccessToken = (payload: {
   userId: Types.ObjectId;
   sessionId: Types.ObjectId;

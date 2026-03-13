@@ -4,6 +4,7 @@ import {
 } from "../email/email.service.js";
 import { AppError } from "../errors/AppError.js";
 import { EmailVerificationToken } from "../models/emailVerification.model.js";
+import { PasswordResetToken } from "../models/passwordReset.model.js";
 import { Session } from "../models/session.model.js";
 import { User, UserDocument } from "../models/user.model.js";
 import {
@@ -15,6 +16,7 @@ import { compareHash, generateHash } from "../utils/password.js";
 import {
   generateAccessToken,
   generateRefreshToken,
+  generateSHA256Hash,
   generateVerificationToken,
   REFRESH_TOKEN_TTL,
   verifyRefreshToken,
@@ -214,8 +216,38 @@ export const forgotPasswordService = async (email: string) => {
     return { resetEmailSent: true };
   }
   const token = generateVerificationToken();
-  const tokenHash = await generateHash(token);
+  const tokenHash = generateSHA256Hash(token);
   await createPasswordResetToken(user._id, tokenHash);
   await sendResetPasswordEmail(user.email, token);
   return { resetEmailSent: true };
+};
+
+export const resetPasswordService = async (
+  token: string,
+  newPassword: string,
+) => {
+  const tokenHash = generateSHA256Hash(token);
+  const tokenRecord = await PasswordResetToken.findOne({ token: tokenHash });
+  if (!tokenRecord) {
+    throw new AppError("INVALID_TOKEN");
+  }
+  if (tokenRecord.expiresAt.getTime() < Date.now()) {
+    throw new AppError("INVALID_TOKEN");
+  }
+  if (tokenRecord.used) {
+    throw new AppError("INVALID_TOKEN");
+  }
+  const user = await User.findById(tokenRecord.userId);
+  if (!user) {
+    throw new AppError("INVALID_TOKEN");
+  }
+  const newPasswordHash = await generateHash(newPassword);
+  user.password = newPasswordHash;
+  tokenRecord.used = true;
+  await Promise.all([
+    user.save(),
+    tokenRecord.save(),
+    Session.deleteMany({ userId: user._id }),
+  ]);
+  return { passwordReset: true };
 };

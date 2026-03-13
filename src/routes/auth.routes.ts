@@ -9,6 +9,7 @@ import {
   refreshController,
   registerController,
   resendVerificationController,
+  resetPasswordController,
   verifyEmailController,
 } from "../controllers/auth.controller.js";
 
@@ -31,5 +32,7 @@ router.post("/logout-all", authMiddleware, logoutAllController);
 router.post("/change-password", authMiddleware, changePasswordController);
 
 router.post("/forgot-password", forgotPasswordController);
+
+router.post("/reset-password", resetPasswordController);
 
 export default router;
