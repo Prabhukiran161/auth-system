@@ -13,23 +13,23 @@ export const ERROR_CODES = {
   },
   SERVICE_UNAVAILABLE: {
     statusCode: 503,
-    message: "Service is temporarily unavailable",
+    message: "Service temporarily unavailable",
   },
   EMAIL_ALREADY_EXISTS: {
     statusCode: 400,
-    message: "Email is already registered",
+    message: "Email already registered",
   },
   INVALID_TOKEN: {
-    statusCode: 400,
-    message: "Invalid Token",
+    statusCode: 401,
+    message: "Invalid authentication token",
   },
   TOKEN_EXPIRED: {
-    statusCode: 400,
-    message: "Token already expired",
+    statusCode: 401,
+    message: "Token has expired",
   },
   EMAIL_ALREADY_VERIFIED: {
     statusCode: 409,
-    message: "Email is already verified",
+    message: "Email already verified",
   },
   USER_NOT_FOUND: {
     statusCode: 404,
@@ -37,15 +37,15 @@ export const ERROR_CODES = {
   },
   INVALID_CREDENTIALS: {
     statusCode: 401,
-    message: "Invalid credentials",
+    message: "Invalid email or password",
   },
   EMAIL_NOT_VERIFIED: {
     statusCode: 401,
-    message: "Email is not verified",
+    message: "Email verification required",
   },
   ACCOUNT_LOCKED: {
     statusCode: 423,
-    message: "Your account is locked due to multiple failed login attempts.",
+    message: "Account temporarily locked due to multiple failed login attempts",
   },
   INVALID_REFRESH_TOKEN: {
     statusCode: 401,
@@ -61,10 +61,12 @@ export const ERROR_CODES = {
   },
   SESSION_EXPIRED: {
     statusCode: 401,
-    message: "Session Expired",
+    message: "Session has Expired",
   },
   UNAUTHORIZED: {
     statusCode: 401,
-    message: "Unauthorized",
+    message: "Authentication required",
   },
 } as const;
+
+export type ErrorCode = keyof typeof ERROR_CODES;

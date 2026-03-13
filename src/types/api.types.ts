@@ -1,9 +1,9 @@
-import { ERROR_CODES } from "../errors/errorCodes.js";
+import { ErrorCode } from "../errors/errorCodes.js";
 export type ApiResponse<T> = {
   success: boolean;
   data: T | null;
   error: {
-    code: keyof typeof ERROR_CODES;
+    code: ErrorCode;
     message: string;
   } | null;
 };

@@ -1,11 +1,11 @@
-import { ERROR_CODES } from "./errorCodes.js";
+import { ERROR_CODES, ErrorCode } from "./errorCodes.js";
 
 export class AppError extends Error {
-  code: keyof typeof ERROR_CODES;
+  code: ErrorCode;
   statusCode: number;
   isOperational: boolean;
 
-  constructor(code: keyof typeof ERROR_CODES) {
+  constructor(code: ErrorCode) {
     const errorConfig = ERROR_CODES[code];
     super(errorConfig.message);
     this.code = code;

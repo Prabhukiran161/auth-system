@@ -1,5 +1,5 @@
 import { ApiResponse } from "../types/api.types.js";
-import { ERROR_CODES } from "../errors/errorCodes.js";
+import { ErrorCode } from "../errors/errorCodes.js";
 
 export const successResponse = <T>(data: T): ApiResponse<T> => {
   return {
@@ -10,7 +10,7 @@ export const successResponse = <T>(data: T): ApiResponse<T> => {
 };
 
 export const errorResponse = (
-  code: keyof typeof ERROR_CODES,
+  code: ErrorCode,
   message: string,
 ): ApiResponse<null> => {
   return {
