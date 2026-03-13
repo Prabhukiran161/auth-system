@@ -251,3 +251,32 @@ export const resetPasswordService = async (
   ]);
   return { passwordReset: true };
 };
+
+export const getAuthSessionsService = async (userId: string) => {
+  const sessions = await Session.find({
+    userId,
+    revoked: false,
+    expiresAt: { $gt: new Date() },
+  }).sort({ createdAt: -1 });
+  return sessions;
+};
+
+export const deleteAuthSessionService = async (
+  sessionId: string,
+  currentUserId: string,
+) => {
+  const session = await Session.findById(sessionId);
+  if (!session) {
+    throw new AppError("INVALID_SESSION");
+  }
+  if (session.revoked) {
+    throw new AppError("INVALID_SESSION");
+  }
+  if (session.userId.toString() !== currentUserId) {
+    throw new AppError("INVALID_SESSION");
+  }
+  session.revoked = true;
+  session.revokedAt = new Date(Date.now());
+  await session.save();
+  return { revoked: true };
+};

@@ -1,4 +1,4 @@
-import mongoose, { Types } from "mongoose";
+import mongoose, { now, Types } from "mongoose";
 
 const sessionSchema = new mongoose.Schema(
   {
@@ -37,6 +37,10 @@ const sessionSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
       index: true,
+    },
+    revokedAt: {
+      type: Date,
+      default: null,
     },
   },
   {

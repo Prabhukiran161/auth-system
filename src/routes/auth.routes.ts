@@ -2,7 +2,9 @@ import { Router } from "express";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import {
   changePasswordController,
+  deleteAuthSessionController,
   forgotPasswordController,
+  getAuthSessionsController,
   loginController,
   logoutAllController,
   logoutController,
@@ -34,5 +36,13 @@ router.post("/change-password", authMiddleware, changePasswordController);
 router.post("/forgot-password", forgotPasswordController);
 
 router.post("/reset-password", resetPasswordController);
+
+router.get("/sessions", authMiddleware, getAuthSessionsController);
+
+router.delete(
+  "/sessions/:sessionId",
+  authMiddleware,
+  deleteAuthSessionController,
+);
 
 export default router;

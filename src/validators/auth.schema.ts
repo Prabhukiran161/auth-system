@@ -55,3 +55,9 @@ export const resetPasswordSchema = z.object({
 });
 
 export type resetPasswordDocument = z.infer<typeof resetPasswordSchema>;
+
+export const deleteAuthSessionSchema = z.object({
+  sessionId: z.string().length(24),
+});
+
+export type deleteAuthSessionDocument = z.infer<typeof deleteAuthSessionSchema>;

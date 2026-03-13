@@ -1,5 +1,6 @@
 import {
   changePasswordRequestDTO,
+  deleteAuthSessionRequestDTO,
   forgotPasswordRequestDTO,
   loginRequestDTO,
   refreshRequestDTO,
@@ -10,6 +11,7 @@ import {
 } from "../dto/auth.request.dto.js";
 import {
   changePasswordSchema,
+  deleteAuthSessionSchema,
   forgotPasswordSchema,
   loginSchema,
   refreshSchema,
@@ -20,7 +22,9 @@ import {
 } from "../validators/auth.schema.js";
 import {
   changePasswordService,
+  deleteAuthSessionService,
   forgotPasswordService,
+  getAuthSessionsService,
   loginService,
   logoutAllService,
   logoutService,
@@ -30,7 +34,10 @@ import {
   resetPasswordService,
   verifyEmailService,
 } from "../services/auth.service.js";
-import { registerResponseDTO } from "../dto/auth.response.dto.js";
+import {
+  getAuthSessionsResponseDTO,
+  registerResponseDTO,
+} from "../dto/auth.response.dto.js";
 import { successResponse } from "../utils/apiResponse.js";
 import { catchAsync } from "../utils/catchAsync.js";
 import { refreshTokenCookieOptions } from "../config/cookie.js";
@@ -115,5 +122,21 @@ export const resetPasswordController = catchAsync(async (req, res) => {
   const dto = resetPasswordRequestDTO(req);
   const { token, password } = resetPasswordSchema.parse(dto);
   const response = await resetPasswordService(token, password);
+  res.status(200).json(successResponse(response));
+});
+
+export const getAuthSessionsController = catchAsync(async (req, res) => {
+  const sessions = await getAuthSessionsService(req.user!.userId);
+  const response = getAuthSessionsResponseDTO(sessions, req.user!.sessionId);
+  res.status(200).json(successResponse(response));
+});
+
+export const deleteAuthSessionController = catchAsync(async (req, res) => {
+  const dto = deleteAuthSessionRequestDTO(req);
+  const { sessionId } = deleteAuthSessionSchema.parse(dto);
+  const response = await deleteAuthSessionService(sessionId, req.user!.userId);
+  if (sessionId === req.user!.sessionId) {
+    res.clearCookie("refreshToken", refreshTokenCookieOptions);
+  }
   res.status(200).json(successResponse(response));
 });

@@ -1,6 +1,7 @@
 import type { Request } from "express";
 import {
   changePasswordDocument,
+  deleteAuthSessionDocument,
   ForgotPasswordDocument,
   LoginInput,
   RefreshTokenPayload,
@@ -61,10 +62,16 @@ export const forgotPasswordRequestDTO = (
   return { email: body.email };
 };
 
-export const resetPasswordRequestDTO = (req: Request): resetPasswordDocument => {
+export const resetPasswordRequestDTO = (
+  req: Request,
+): resetPasswordDocument => {
   const body = req.body ?? {};
   return {
     token: body.token,
     password: body.password,
   };
+};
+
+export const deleteAuthSessionRequestDTO = (req: Request) => {
+  return { sessionId: req.params.sessionId };
 };
