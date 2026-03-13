@@ -6,6 +6,8 @@ import { AppError } from "../errors/AppError.js";
 
 export const REFRESH_TOKEN_TTL = 1000 * 60 * 60 * 24 * 7;
 
+export const RESET_TOKEN_TTL = 1000 * 60 * 15;
+
 export const ACCESS_TOKEN_TTL = "15m";
 
 export const generateVerificationToken = () => {

@@ -1,6 +1,7 @@
 import type { Request } from "express";
 import {
   changePasswordDocument,
+  ForgotPasswordDocument,
   LoginInput,
   RefreshTokenPayload,
   RegisterInput,
@@ -50,4 +51,11 @@ export const changePasswordRequestDTO = (
 ): changePasswordDocument => {
   const body = req.body ?? {};
   return { oldPassword: body.oldPassword, newPassword: body.newPassword };
+};
+
+export const forgotPasswordRequestDTO = (
+  req: Request,
+): ForgotPasswordDocument => {
+  const body = req.body ?? {};
+  return { email: body.email };
 };

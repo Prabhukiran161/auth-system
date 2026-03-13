@@ -1,5 +1,6 @@
 import {
   changePasswordRequestDTO,
+  forgotPasswordRequestDTO,
   loginRequestDTO,
   refreshRequestDTO,
   registerRequestDTO,
@@ -8,6 +9,7 @@ import {
 } from "../dto/auth.request.dto.js";
 import {
   changePasswordSchema,
+  forgotPasswordSchema,
   loginSchema,
   refreshSchema,
   registerSchema,
@@ -16,6 +18,7 @@ import {
 } from "../validators/auth.schema.js";
 import {
   changePasswordService,
+  forgotPasswordService,
   loginService,
   logoutAllService,
   logoutService,
@@ -29,7 +32,6 @@ import { successResponse } from "../utils/apiResponse.js";
 import { catchAsync } from "../utils/catchAsync.js";
 import { refreshTokenCookieOptions } from "../config/cookie.js";
 import { extractDevice } from "../utils/device.js";
-import { AppError } from "../errors/AppError.js";
 
 export const registerController = catchAsync(async (req, res) => {
   const dto = registerRequestDTO(req);
@@ -94,5 +96,14 @@ export const changePasswordController = catchAsync(async (req, res) => {
   const validatedData = changePasswordSchema.parse(dto);
   const response = await changePasswordService(validatedData, req.user!.userId);
   res.clearCookie("refreshToken", refreshTokenCookieOptions);
+  res.status(200).json(successResponse(response));
+});
+
+export const forgotPasswordController = catchAsync(async (req, res) => {
+  const dto = forgotPasswordRequestDTO(req);
+  const validEmail = forgotPasswordSchema.parse(dto);
+  const response = await forgotPasswordService(
+    validEmail.email.toLowerCase().trim(),
+  );
   res.status(200).json(successResponse(response));
 });

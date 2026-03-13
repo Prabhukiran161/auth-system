@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import {
   changePasswordController,
+  forgotPasswordController,
   loginController,
   logoutAllController,
   logoutController,
@@ -28,5 +29,7 @@ router.post("/logout", authMiddleware, logoutController);
 router.post("/logout-all", authMiddleware, logoutAllController);
 
 router.post("/change-password", authMiddleware, changePasswordController);
+
+router.post("/forgot-password", forgotPasswordController);
 
 export default router;

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { required } from "zod/mini";
 
 const passwordResetTokenSchema = new mongoose.Schema(
   {
@@ -16,7 +15,7 @@ const passwordResetTokenSchema = new mongoose.Schema(
     expiresAt: {
       type: Date,
       required: true,
-      index: { expires: 0 },
+      index: true,
     },
     used: {
       type: Boolean,

@@ -1,4 +1,7 @@
-import { sendVerificationEmail } from "../email/email.service.js";
+import {
+  sendResetPasswordEmail,
+  sendVerificationEmail,
+} from "../email/email.service.js";
 import { AppError } from "../errors/AppError.js";
 import { EmailVerificationToken } from "../models/emailVerification.model.js";
 import { Session } from "../models/session.model.js";
@@ -7,6 +10,7 @@ import {
   createEmailVerificationToken,
   deleteEmailVerificationToken,
 } from "../repositories/emailVerification.repository.js";
+import { createPasswordResetToken } from "../repositories/passwordResetToken.repository.js";
 import { compareHash, generateHash } from "../utils/password.js";
 import {
   generateAccessToken,
@@ -202,4 +206,16 @@ export const changePasswordService = async (
   user.password = await generateHash(input.newPassword);
   await Promise.all([user.save(), Session.deleteMany({ userId })]);
   return { passwordChanged: true };
+};
+
+export const forgotPasswordService = async (email: string) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    return { resetEmailSent: true };
+  }
+  const token = generateVerificationToken();
+  const tokenHash = await generateHash(token);
+  await createPasswordResetToken(user._id, tokenHash);
+  await sendResetPasswordEmail(user.email, token);
+  return { resetEmailSent: true };
 };
