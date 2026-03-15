@@ -11,6 +11,7 @@ import {
   createEmailVerificationToken,
   deleteEmailVerificationToken,
 } from "../repositories/emailVerification.repository.js";
+import { createLoginAttempt } from "../repositories/loginAttempts.repository.js";
 import { createPasswordResetToken } from "../repositories/passwordResetToken.repository.js";
 import { compareHash, generateHash } from "../utils/password.js";
 import {
@@ -90,19 +91,53 @@ export const loginService = async (
   { email, password }: LoginInput,
   meta: { ip: string; userAgent: string; device: string },
 ) => {
+  const logLoginFailure = async (
+    email: string,
+    ip: string,
+    userAgent: string,
+  ) => {
+    return createLoginAttempt({
+      email: email,
+      ip: ip,
+      userAgent: userAgent,
+      success: false,
+    });
+  };
+
+  const logLoginSuccess = async (
+    email: string,
+    ip: string,
+    userAgent: string,
+  ) => {
+    return createLoginAttempt({
+      email: email,
+      ip: ip,
+      userAgent: userAgent,
+      success: true,
+    });
+  };
+
   const user = await User.findOne({ email });
   if (!user) {
+    await logLoginFailure(email, meta.ip, meta.userAgent);
     throw new AppError("INVALID_CREDENTIALS");
   }
   const isValid = await compareHash(password, user.password);
   if (!isValid) {
+    await logLoginFailure(email, meta.ip, meta.userAgent);
     throw new AppError("INVALID_CREDENTIALS");
   }
   if (!user.emailVerified) {
+    await logLoginFailure(email, meta.ip, meta.userAgent);
     throw new AppError("EMAIL_NOT_VERIFIED");
   }
   if (user.lockUntil && user.lockUntil.getTime() > Date.now()) {
+    await logLoginFailure(email, meta.ip, meta.userAgent);
     throw new AppError("ACCOUNT_LOCKED");
+  }
+  if (user.isBlocked) {
+    await logLoginFailure(email, meta.ip, meta.userAgent);
+    throw new AppError("ACCOUNT_BLOCKED");
   }
   const session = await Session.create({
     userId: user._id,
@@ -111,6 +146,7 @@ export const loginService = async (
     userAgent: meta.userAgent,
     expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
   });
+  await logLoginSuccess(email, meta.ip, meta.userAgent);
   const sessionId = session._id;
   const accessToken = generateAccessToken({
     userId: user._id,
