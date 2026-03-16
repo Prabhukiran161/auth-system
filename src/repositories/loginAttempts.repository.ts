@@ -1,16 +1,15 @@
 import { LoginAttempt } from "../models/loginAttempt.model.js";
 
-export interface LoginAttemptsInput {
-  email: string;
+export interface LoginAttemptsMetaDataInput {
   ip: string;
+  device: string;
   userAgent: string;
-  success: boolean;
 }
-export const createLoginAttempt = async ({
-  email,
-  ip,
-  userAgent,
-  success,
-}: LoginAttemptsInput) => {
-  return LoginAttempt.create({ email, ip, userAgent, success });
+export const createLoginAttempt = async (
+  email: string,
+  meta: LoginAttemptsMetaDataInput,
+  success: boolean,
+) => {
+  const { ip, device, userAgent } = meta;
+  return LoginAttempt.create({ email, ip, device, userAgent, success });
 };

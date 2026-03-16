@@ -12,7 +12,14 @@ const loginAttemptSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    userAgent: String,
+    device: {
+      type: String,
+      required: true,
+    },
+    userAgent: {
+      type: String,
+      required: true,
+    },
     success: {
       type: Boolean,
       default: false,

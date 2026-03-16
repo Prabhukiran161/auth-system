@@ -11,7 +11,10 @@ import {
   createEmailVerificationToken,
   deleteEmailVerificationToken,
 } from "../repositories/emailVerification.repository.js";
-import { createLoginAttempt } from "../repositories/loginAttempts.repository.js";
+import {
+  createLoginAttempt,
+  LoginAttemptsMetaDataInput,
+} from "../repositories/loginAttempts.repository.js";
 import { createPasswordResetToken } from "../repositories/passwordResetToken.repository.js";
 import { compareHash, generateHash } from "../utils/password.js";
 import {
@@ -89,64 +92,54 @@ export const resendVerificationService = async (
 
 export const loginService = async (
   { email, password }: LoginInput,
-  meta: { ip: string; userAgent: string; device: string },
+  meta: LoginAttemptsMetaDataInput,
 ) => {
   const logLoginFailure = async (
     email: string,
-    ip: string,
-    userAgent: string,
+    meta: LoginAttemptsMetaDataInput,
   ) => {
-    return createLoginAttempt({
-      email: email,
-      ip: ip,
-      userAgent: userAgent,
-      success: false,
-    });
+    return createLoginAttempt(email, meta, false);
   };
 
   const logLoginSuccess = async (
     email: string,
-    ip: string,
-    userAgent: string,
+    meta: LoginAttemptsMetaDataInput,
   ) => {
-    return createLoginAttempt({
-      email: email,
-      ip: ip,
-      userAgent: userAgent,
-      success: true,
-    });
+    return createLoginAttempt(email, meta, true);
   };
+
+  const { ip, device, userAgent } = meta;
 
   const user = await User.findOne({ email });
   if (!user) {
-    await logLoginFailure(email, meta.ip, meta.userAgent);
+    await logLoginFailure(email, meta);
     throw new AppError("INVALID_CREDENTIALS");
   }
   const isValid = await compareHash(password, user.password);
   if (!isValid) {
-    await logLoginFailure(email, meta.ip, meta.userAgent);
+    await logLoginFailure(email, meta);
     throw new AppError("INVALID_CREDENTIALS");
   }
   if (!user.emailVerified) {
-    await logLoginFailure(email, meta.ip, meta.userAgent);
+    await logLoginFailure(email, meta);
     throw new AppError("EMAIL_NOT_VERIFIED");
   }
   if (user.lockUntil && user.lockUntil.getTime() > Date.now()) {
-    await logLoginFailure(email, meta.ip, meta.userAgent);
+    await logLoginFailure(email, meta);
     throw new AppError("ACCOUNT_LOCKED");
   }
   if (user.isBlocked) {
-    await logLoginFailure(email, meta.ip, meta.userAgent);
+    await logLoginFailure(email, meta);
     throw new AppError("ACCOUNT_BLOCKED");
   }
   const session = await Session.create({
     userId: user._id,
-    device: meta.device,
-    ipAddress: meta.ip,
-    userAgent: meta.userAgent,
+    device: device,
+    ipAddress: ip,
+    userAgent: userAgent,
     expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
   });
-  await logLoginSuccess(email, meta.ip, meta.userAgent);
+  await logLoginSuccess(email, meta);
   const sessionId = session._id;
   const accessToken = generateAccessToken({
     userId: user._id,
