@@ -4,6 +4,7 @@ import {
 } from "../email/email.service.js";
 import { AppError } from "../errors/AppError.js";
 import { EmailVerificationToken } from "../models/emailVerification.model.js";
+import { LoginAttempt } from "../models/loginAttempt.model.js";
 import { PasswordResetToken } from "../models/passwordReset.model.js";
 import { Session } from "../models/session.model.js";
 import { User, UserDocument } from "../models/user.model.js";
@@ -308,4 +309,12 @@ export const deleteAuthSessionService = async (
   session.revokedAt = new Date(Date.now());
   await session.save();
   return { revoked: true };
+};
+
+export const loginHistoryServie = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError("USER_NOT_FOUND");
+  }
+  return LoginAttempt.find({ email: user.email });
 };

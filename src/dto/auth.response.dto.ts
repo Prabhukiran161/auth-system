@@ -1,6 +1,6 @@
+import { LoginAttemptDocument } from "../models/loginAttempt.model.js";
 import { SessionDocument } from "../models/session.model.js";
 import { UserDocument } from "../models/user.model.js";
-import { Types } from "mongoose";
 
 export const registerResponseDTO = (user: UserDocument) => {
   return {
@@ -20,5 +20,14 @@ export const getAuthSessionsResponseDTO = (
     ip: session.ipAddress,
     createdAt: session.createdAt,
     isCurrent: session._id.toString() === sessionId,
+  }));
+};
+
+export const loginHistoryResponseDTO = (logins: LoginAttemptDocument[]) => {
+  return logins.map((login) => ({
+    ip: login.ip,
+    device: login.device,
+    success: login.success,
+    createdAt: login.createdAt,
   }));
 };

@@ -6,6 +6,7 @@ import {
   forgotPasswordController,
   getAuthSessionsController,
   loginController,
+  loginHistoryController,
   logoutAllController,
   logoutController,
   refreshController,
@@ -44,5 +45,7 @@ router.delete(
   authMiddleware,
   deleteAuthSessionController,
 );
+
+router.get("/login-history", authMiddleware, loginHistoryController);
 
 export default router;

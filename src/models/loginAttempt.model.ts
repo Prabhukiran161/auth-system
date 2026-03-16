@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 const loginAttemptSchema = new mongoose.Schema(
   {
@@ -33,6 +33,6 @@ const loginAttemptSchema = new mongoose.Schema(
 
 export type LoginAttemptDocument = mongoose.InferSchemaType<
   typeof loginAttemptSchema
->;
+> & { _id: Types.ObjectId };
 
 export const LoginAttempt = mongoose.model("LoginAttempts", loginAttemptSchema);

@@ -25,6 +25,7 @@ import {
   deleteAuthSessionService,
   forgotPasswordService,
   getAuthSessionsService,
+  loginHistoryServie,
   loginService,
   logoutAllService,
   logoutService,
@@ -36,6 +37,7 @@ import {
 } from "../services/auth.service.js";
 import {
   getAuthSessionsResponseDTO,
+  loginHistoryResponseDTO,
   registerResponseDTO,
 } from "../dto/auth.response.dto.js";
 import { successResponse } from "../utils/apiResponse.js";
@@ -138,5 +140,11 @@ export const deleteAuthSessionController = catchAsync(async (req, res) => {
   if (sessionId === req.user!.sessionId) {
     res.clearCookie("refreshToken", refreshTokenCookieOptions);
   }
+  res.status(200).json(successResponse(response));
+});
+
+export const loginHistoryController = catchAsync(async (req, res) => {
+  const data = await loginHistoryServie(req.user!.userId);
+  const response = loginHistoryResponseDTO(data);
   res.status(200).json(successResponse(response));
 });
